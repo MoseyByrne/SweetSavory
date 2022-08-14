@@ -14,8 +14,6 @@ namespace SweetSavory.Models
 
     public string Description { get; set; }
 
-    public DateTime Birthdate { get; set; }
-
     public virtual ICollection<TreatFlavor> JoinEntities { get; }
   }
 }
