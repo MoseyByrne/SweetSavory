@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace SweetSavory.Models
@@ -7,13 +6,11 @@ namespace SweetSavory.Models
   {
     public Flavor()
     {
-      this.JoinEntities = new HashSet<TreatFlavor>();
+      this.JoinEntities = new HashSet<FlavorTreat>();
     }
 
     public int FlavorId { get; set; }
-
-    public string Description { get; set; }
-
-    public virtual ICollection<TreatFlavor> JoinEntities { get; }
+    public string Name { get; set; }
+    public virtual ICollection<FlavorTreat> JoinEntities { get; set; }
   }
 }

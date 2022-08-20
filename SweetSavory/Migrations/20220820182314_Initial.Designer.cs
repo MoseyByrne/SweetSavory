@@ -9,8 +9,8 @@ using SweetSavory.Models;
 namespace SweetSavory.Migrations
 {
     [DbContext(typeof(SweetSavoryContext))]
-    [Migration("20220820173742_Authorization")]
-    partial class Authorization
+    [Migration("20220820182314_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -217,12 +217,33 @@ namespace SweetSavory.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("FlavorId");
 
                     b.ToTable("Flavors");
+                });
+
+            modelBuilder.Entity("SweetSavory.Models.FlavorTreat", b =>
+                {
+                    b.Property<int>("FlavorTreatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("FlavorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TreatId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FlavorTreatId");
+
+                    b.HasIndex("FlavorId");
+
+                    b.HasIndex("TreatId");
+
+                    b.ToTable("FlavorTreat");
                 });
 
             modelBuilder.Entity("SweetSavory.Models.Treat", b =>
@@ -242,27 +263,6 @@ namespace SweetSavory.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Treats");
-                });
-
-            modelBuilder.Entity("SweetSavory.Models.TreatFlavor", b =>
-                {
-                    b.Property<int>("TreatFlavorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("FlavorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TreatId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TreatFlavorId");
-
-                    b.HasIndex("FlavorId");
-
-                    b.HasIndex("TreatId");
-
-                    b.ToTable("TreatFlavor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -316,16 +316,7 @@ namespace SweetSavory.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SweetSavory.Models.Treat", b =>
-                {
-                    b.HasOne("SweetSavory.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SweetSavory.Models.TreatFlavor", b =>
+            modelBuilder.Entity("SweetSavory.Models.FlavorTreat", b =>
                 {
                     b.HasOne("SweetSavory.Models.Flavor", "Flavor")
                         .WithMany("JoinEntities")
@@ -342,6 +333,15 @@ namespace SweetSavory.Migrations
                     b.Navigation("Flavor");
 
                     b.Navigation("Treat");
+                });
+
+            modelBuilder.Entity("SweetSavory.Models.Treat", b =>
+                {
+                    b.HasOne("SweetSavory.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SweetSavory.Models.Flavor", b =>

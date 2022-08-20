@@ -4,14 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SweetSavory.Migrations
 {
-    public partial class addIdentity : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Specialty",
-                table: "Treats");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -49,6 +45,19 @@ namespace SweetSavory.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Flavors",
+                columns: table => new
+                {
+                    FlavorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Flavors", x => x.FlavorId);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,6 +166,52 @@ namespace SweetSavory.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Treats",
+                columns: table => new
+                {
+                    TreatId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Treats", x => x.TreatId);
+                    table.ForeignKey(
+                        name: "FK_Treats_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FlavorTreat",
+                columns: table => new
+                {
+                    FlavorTreatId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    TreatId = table.Column<int>(type: "int", nullable: false),
+                    FlavorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlavorTreat", x => x.FlavorTreatId);
+                    table.ForeignKey(
+                        name: "FK_FlavorTreat_Flavors_FlavorId",
+                        column: x => x.FlavorId,
+                        principalTable: "Flavors",
+                        principalColumn: "FlavorId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FlavorTreat_Treats_TreatId",
+                        column: x => x.TreatId,
+                        principalTable: "Treats",
+                        principalColumn: "TreatId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -193,6 +248,21 @@ namespace SweetSavory.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FlavorTreat_FlavorId",
+                table: "FlavorTreat",
+                column: "FlavorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FlavorTreat_TreatId",
+                table: "FlavorTreat",
+                column: "TreatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Treats_UserId",
+                table: "Treats",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -213,16 +283,19 @@ namespace SweetSavory.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "FlavorTreat");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Flavors");
 
-            migrationBuilder.AddColumn<string>(
-                name: "Specialty",
-                table: "Treats",
-                type: "longtext CHARACTER SET utf8mb4",
-                nullable: true);
+            migrationBuilder.DropTable(
+                name: "Treats");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
