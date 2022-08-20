@@ -13,8 +13,7 @@ namespace SweetSavory
     {
         public Startup(IWebHostEnvironment env)
         {
-            var builder =
-                new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                     .SetBasePath(env.ContentRootPath)
                     .AddJsonFile("appsettings.json");
             Configuration = builder.Build();
@@ -26,17 +25,23 @@ namespace SweetSavory
         {
             services.AddMvc();
 
-            services
-                .AddEntityFrameworkMySql()
-                .AddDbContext<SweetSavoryContext>(options =>
-                    options
-                        .UseMySql(Configuration["ConnectionStrings:DefaultConnection"],
-                        ServerVersion
-                            .AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
+            services.AddEntityFrameworkMySql()
+                .AddDbContext<SweetSavoryContext>(options => options
+                .UseMySql(Configuration["ConnectionStrings:DefaultConnection"],ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
 
-                                  services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<SweetSavoryContext>()
                 .AddDefaultTokenProviders();
+
+            // services.Configure<IdentityOptions>(options => 
+            //     {
+            //         options.Password.RequiredDigit = false;
+            //         options.Password.RequiredLength = 0;
+            //         options.Password.RequiredLowercase = false;
+            //         options.Password.RequiredNonAlphanumeric = false;
+            //         options.Password.RequiredUppercase = false;
+            //         options.Password.RequiredUniqueChars = 0;
+            //     });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -44,7 +49,7 @@ namespace SweetSavory
             app.UseDeveloperExceptionPage();
             app.UseAuthentication(); 
             app.UseRouting();
-            app.UseAuthentication(); 
+            app.UseAuthorization(); 
 
             app
                 .UseEndpoints(routes =>

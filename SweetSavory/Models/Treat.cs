@@ -16,6 +16,8 @@ namespace SweetSavory.Models
 
     public string Name { get; set; }
 
+    public virtual ApplicationUser User { get; set; }
+
     public virtual ICollection<TreatFlavor> JoinEntities { get; set; }
   }
 }
